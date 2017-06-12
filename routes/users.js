@@ -1,13 +1,28 @@
 const router = require('koa-router')()
+const userDB = require('../db/userDB');
 
 router.prefix('/users')
 
-router.get('/', function (ctx, next) {
-  ctx.body = 'this is a users response!'
+/***** 有些操作应该是post方式的，为了方便调试就改成了get方式 *****/
+
+router.get('/', async (ctx, next)=> {
+  let res = await userDB.get(ctx,next);
+  ctx.body = res;
 })
 
-router.get('/bar', function (ctx, next) {
-  ctx.body = 'this is a users/bar response'
+router.get('/add',async (ctx, next)=> {
+  let res = await userDB.add(ctx,next);
+  ctx.body = res;
 })
 
-module.exports = router
+router.get('/delete', async (ctx,next)=> {
+  let res = await userDB.delete(ctx,next);
+  ctx.body = res;
+})
+
+router.get('/update', async (ctx,next)=> {
+  let res = await userDB.update(ctx,next);
+  ctx.body = res;
+})
+
+module.exports = router;
