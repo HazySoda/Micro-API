@@ -5,8 +5,6 @@ const json = require('koa-json')
 const onError = require('koa-onerror')
 const bodyparser = require('koa-bodyparser')
 const logUtil = require('./util/log_util')
-
-const index = require('./routes/index')
 const users = require('./routes/users')
 
 // error handler
@@ -44,7 +42,6 @@ app.use(async (ctx, next) => {
 })
 
 // routes
-app.use(index.routes(), index.allowedMethods())
 app.use(users.routes(), users.allowedMethods())
 
 module.exports = app
