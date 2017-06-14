@@ -6,8 +6,12 @@
     "start": "node bin/www",
     "dev": "./node_modules/.bin/nodemon bin/www",
     "prd": "pm2 start bin/www",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint --ext .js ./"
   },
+  "pre-commit": [
+    "lint"
+  ],
   "dependencies": {
     "debug": "^2.6.3",
     "koa": "^2.2.0",
@@ -20,10 +24,17 @@
     "koa-static": "^3.0.0",
     "koa-views": "^5.2.1",
     "log4js": "^1.1.1",
-    "mysql": "^2.13.0",
-    "pug": "^2.0.0-rc.1"
+    "mysql": "^2.13.0"
   },
   "devDependencies": {
-    "nodemon": "^1.8.1"
+    "eslint": "^3.19.0",
+    "eslint-config-standard": "^6.2.1",
+    "eslint-friendly-formatter": "^2.0.7",
+    "eslint-loader": "^1.7.1",
+    "eslint-plugin-html": "^2.0.0",
+    "eslint-plugin-promise": "^3.4.0",
+    "eslint-plugin-standard": "^2.0.1",
+    "nodemon": "^1.8.1",
+    "pre-commit": "^1.2.2"
   }
 }
