@@ -91,6 +91,9 @@ var checkNickname = (nickname, connection) => {
 var checkPhoneNumber = (number, connection) => {
   return new Promise((resolve, reject) => {
     let isNumber = /^\d{11}$/.test(number)
+    if (typeof number === 'number') {
+      resolve('参数格式错误')
+    }
     if (!isNumber) {
       resolve('无效的手机号码')
     }
@@ -158,7 +161,6 @@ module.exports = {
         // 对密码进行md5加密
         try {
           hashPwd = getHashPwd(password)
-          phoneNumber = phoneNumber.toString()
         } catch (e) {
           console.log(e)
         }

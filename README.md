@@ -7,7 +7,7 @@
   - 请求参数：
     名称 | 类型	| 必填 | 备注
     | ------- | ------- | ------- | ------- | 
-    | phone_number  | int        | Y  | 手机号   |
+    | phoneNumber  | string        | Y  | 手机号   |
     | nickname           | string  | Y  | 昵称       |
     | password           | string  | Y  | 密码       |
    - 返回结果示例
@@ -15,7 +15,7 @@
     ` 
         {
             "code": 0,
-            "msg": "success",
+            "msg": "注册成功",
             "data": {
             }
         }
