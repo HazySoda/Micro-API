@@ -1,4 +1,4 @@
-'use strict';
+'use strict'
 
 module.exports = function (sequelize, DataTypes) {
   return sequelize.define('user', {
@@ -25,8 +25,7 @@ module.exports = function (sequelize, DataTypes) {
       type: DataTypes.STRING,
       allowNull: false
     }
-  },
-  {
+  }, {
     timestamps: false,
     charset: 'utf8'
   })

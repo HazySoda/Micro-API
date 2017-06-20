@@ -1,7 +1,12 @@
-'use strict';
+'use strict'
 
-var Sequelize = require('sequelize');
+var Sequelize = require('sequelize')
 
 exports.sequelize = function () {
-  return new Sequelize('mysql://root:wjzl2008@localhost:3306/test')
+  return new Sequelize('test', 'root', 'wjzl2008', {
+    host: '127.0.0.1',
+    port: 3306,
+    dialect: 'mysql',
+    logging: console.log
+  })
 }
