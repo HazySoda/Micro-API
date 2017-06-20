@@ -33,6 +33,7 @@ var checkNickname = (nickname) => {
   if (/^[0-9]*$/.test(nickname)) {
     return '昵称不能为纯数字'
   }
+  return false
 }
 
 // 检查手机号码
@@ -41,12 +42,13 @@ var checkPhoneNumber = (number) => {
   if (!number) {
     return '手机号码不可为空'
   }
-  if (typeof number === 'number') {
+  if (typeof number !== 'string') {
     return '手机号码格式有误'
   }
   if (!isNumber) {
     return '无效的手机号码'
   }
+  return false
 }
 
 const register = async (ctx, next) => {
