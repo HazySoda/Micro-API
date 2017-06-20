@@ -1,5 +1,3 @@
-'use strict'
-
 module.exports = function (sequelize, DataTypes) {
   return sequelize.define('user', {
     uid: {
@@ -25,8 +23,5 @@ module.exports = function (sequelize, DataTypes) {
       type: DataTypes.STRING,
       allowNull: false
     }
-  }, {
-    timestamps: false,
-    charset: 'utf8'
-  })
+  }, {tableName: 'user'})
 }

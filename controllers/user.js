@@ -1,13 +1,19 @@
 const crypto = require('crypto')
-const userModel = require('../models').User
-const util = require('../util/util')
+// const jwt = require('koa-jwt')
 
+const util = require('../util/util')
+const loadModel = require('../db')
+const userModel = loadModel('user')
 // 加密密码
 var getHashPwd = (password) => {
-  let hash = crypto.createHash('md5')
-  return hash.update(password).digest('hex')
+  return crypto.createHash('md5').update(password).digest('hex')
 }
 
+// 生成accessToken
+var createToken = (salt) => {
+  let secret = 'micro-club'
+  return 'micro.' + crypto.createHmac('sha256', secret).update(salt).digest('hex')
+}
 // 检查密码
 var checkPassword = (password) => {
   let charOrNumber = /[A-z]*[a-zA-Z][0-9][A-z0-9]*/.test(password)
@@ -25,41 +31,66 @@ var checkPassword = (password) => {
 
 // 检查昵称
 var checkNickname = (nickname) => {
-  if (!nickname) {
-    return '昵称不可为空'
-  }
-  if (nickname.length < 3 || nickname.length > 16) {
-    return '昵称长度在3-16位之间'
-  }
-  if (/^[0-9]*$/.test(nickname)) {
-    return '昵称不能为纯数字'
-  }
-  return false
+  return new Promise((resolve, reject) => {
+    if (!nickname) {
+      resolve('昵称不可为空')
+    }
+    if (nickname.length < 3 || nickname.length > 16) {
+      resolve('昵称长度在3-16位之间')
+    }
+    if (/^[0-9]*$/.test(nickname)) {
+      resolve('昵称不能为纯数字')
+    }
+    userModel.findOne({
+      where: {
+        nickname: nickname
+      }
+    }).then(res => {
+      console.log(res)
+      if (res) {
+        resolve('该昵称已被注册')
+      } else {
+        resolve(false)
+      }
+    })
+  })
 }
 
 // 检查手机号码
 var checkPhoneNumber = (number) => {
-  let isNumber = /^\d{11}$/.test(number)
-  if (!number) {
-    return '手机号码不可为空'
-  }
-  if (typeof number !== 'string') {
-    return '手机号码格式有误'
-  }
-  if (!isNumber) {
-    return '无效的手机号码'
-  }
-  return false
+  return new Promise((resolve, reject) => {
+    let isNumber = /^\d{11}$/.test(number)
+    if (!number) {
+      resolve('手机号码不可为空')
+    }
+    if (typeof number === 'number') {
+      resolve('手机号码格式有误')
+    }
+    if (!isNumber) {
+      resolve('无效的手机号码')
+    }
+    userModel.findOne({
+      where: {
+        phoneNumber: number
+      }
+    }).then(res => {
+      console.log(res)
+      if (res) {
+        resolve('该手机号已被注册')
+      } else {
+        resolve(false)
+      }
+    })
+  })
 }
 
 const register = async (ctx, next) => {
   let msg = ''
   let hashPwd = ''
   const { phoneNumber, nickname, password } = ctx.request.body
-  const regDate = util.getNowDate()
-  const numberResult = checkPhoneNumber(phoneNumber)
   const pwdResult = checkPassword(password)
-  const nameResult = checkNickname(nickname)
+  const numberResult = await checkPhoneNumber(phoneNumber)
+  const nameResult = await checkNickname(nickname)
 
   // 校验各字段
   if (pwdResult) {
@@ -87,7 +118,7 @@ const register = async (ctx, next) => {
     phoneNumber: phoneNumber,
     hashpwd: hashPwd,
     nickname: nickname,
-    regDate: regDate
+    regDate: util.getNowDate()
   }
 
   try {
@@ -107,7 +138,59 @@ const register = async (ctx, next) => {
   }
 }
 
-const login = async (ctx, next) => {}
+const login = async (ctx, next) => {
+  let hashPwd = ''
+  let oldHashPwd = ''
+  let response = ''
+  let thisUser
+  const { username, password } = ctx.request.body
+  // 获取加密后登录密码
+  hashPwd = getHashPwd(password)
+
+  // 判断是手机号登录还是昵称登录
+  if (/^\d{11}$/.test(username)) {  // 如果匹配说明手机号登录
+    thisUser = await userModel.findOne({
+      where: {
+        phoneNumber: username
+      }
+    })
+  } else {  // 否则是昵称登录
+    thisUser = await userModel.findOne({
+      where: {
+        nickname: username
+      }
+    })
+  }
+  if (!thisUser) {
+    ctx.body = {
+      code: 400,
+      msg: '用户不存在'
+    }
+    return
+  }
+  oldHashPwd = thisUser.hashpwd
+  if (oldHashPwd) { // 如果为true，说明用户存在
+    if (oldHashPwd === hashPwd) { // 判断密码是否正确
+      let salt = thisUser.nickname + Date.now() + Math.random()
+      let token = createToken(String(salt))
+      response = {
+        code: 0,
+        msg: '登录成功',
+        data: {
+          nickname: thisUser.nickname,
+          phoneNumber: thisUser.phoneNumber,
+          accessToken: token
+        }
+      }
+    } else {
+      response = {
+        code: 400,
+        msg: '账号或密码错误'
+      }
+    }
+  }
+  ctx.body = response
+}
 
 module.exports = {
   register,
