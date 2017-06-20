@@ -1,6 +1,5 @@
 // 引入Crypto 模块
 var crypto = require('crypto')
-var hash = crypto.createHash('md5')
 // 实现与MySQL交互
 var mysql = require('mysql')
 var conf = require('../conf/db')
@@ -45,6 +44,7 @@ var createUserTable = (connection, ...args) => {
 
 // 加密密码
 var getHashPwd = (pwd) => {
+  let hash = crypto.createHash('md5')
   return hash.update(pwd).digest('hex')
 }
 
@@ -125,8 +125,8 @@ module.exports = {
             msg: '操作失败',
             stack: err
           })
-        };
-        let { phoneNumber, nickname, password } = ctx.query
+        }
+        let { phoneNumber, nickname, password } = ctx.request.body
         let res, hashPwd, pwdResult, nameResult, numberResult
         // 验证密码
         pwdResult = checkPassword(password)
@@ -149,7 +149,6 @@ module.exports = {
         } else if (numberResult) {
           res = numberResult
         }
-        console.log('144:' + res)
         // 如果res为true，说明验证不通过，直接返回
         if (res) {
           resolve({
@@ -164,7 +163,6 @@ module.exports = {
         } catch (e) {
           console.log(e)
         }
-        console.log(hashPwd)
         // 建立连接，向表中插入值
         connection.query(sql.insert, [nickname, phoneNumber, hashPwd], async function (err, result) {
           if (err) {
