@@ -5,7 +5,8 @@
   - URL： /member/register
   - 请求方式： POST
   - 请求参数：
-    名称 | 类型	| 必填 | 备注
+  
+    |名称 | 类型	| 必填 | 备注 |
     | ------- | ------- | ------- | ------- | 
     | phoneNumber  | string        | Y  | 手机号   |
     | nickname           | string  | Y  | 昵称       |
