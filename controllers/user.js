@@ -3,8 +3,7 @@ const crypto = require('crypto')
 
 const util = require('../util/util')
 const loadModel = require('../db')
-const userModel = loadModel('member')
-
+const userModel = loadModel('user')
 // 加密密码
 var getHashPwd = (password) => {
   return crypto.createHash('md5').update(password).digest('hex')
@@ -123,6 +122,7 @@ const register = async (ctx, next) => {
   }
 
   try {
+    console.log(data)
     await userModel.create(data)
     ctx.status = 200
     ctx.body = {
