@@ -1,5 +1,6 @@
 const crypto = require('crypto')
-const userModel = require('../models/member')
+const userModel = require('../models').User
+const util = require('../util/util')
 
 // 加密密码
 var getHashPwd = (password) => {
@@ -55,6 +56,7 @@ const register = async (ctx, next) => {
   let msg = ''
   let hashPwd = ''
   const { phoneNumber, nickname, password } = ctx.request.body
+  const regDate = util.getNowDate()
   const numberResult = checkPhoneNumber(phoneNumber)
   const pwdResult = checkPassword(password)
   const nameResult = checkNickname(nickname)
@@ -84,10 +86,12 @@ const register = async (ctx, next) => {
   const data = {
     phoneNumber: phoneNumber,
     hashpwd: hashPwd,
-    nickname: nickname
+    nickname: nickname,
+    regDate: regDate
   }
 
   try {
+    console.log(data)
     await userModel.create(data)
     ctx.status = 200
     ctx.body = {
