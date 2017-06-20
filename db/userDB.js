@@ -125,8 +125,8 @@ module.exports = {
             msg: '操作失败',
             stack: err
           })
-        };
-        let { phoneNumber, nickname, password } = ctx.query
+        }
+        let { phoneNumber, nickname, password } = ctx.request.body
         let res, hashPwd, pwdResult, nameResult, numberResult
         // 验证密码
         pwdResult = checkPassword(password)
@@ -149,7 +149,6 @@ module.exports = {
         } else if (numberResult) {
           res = numberResult
         }
-        console.log('144:' + res)
         // 如果res为true，说明验证不通过，直接返回
         if (res) {
           resolve({
@@ -164,16 +163,11 @@ module.exports = {
         } catch (e) {
           console.log(e)
         }
-        console.log(hashPwd)
         // 建立连接，向表中插入值
         connection.query(sql.insert, [nickname, phoneNumber, hashPwd], async function (err, result) {
           if (err) {
-            console.log(phoneNumber)
-            console.log(err)
             if (err.errno === 1146) {
-              console.log('create table')
               res = await createUserTable(connection, sql.insert, [nickname, phoneNumber, hashPwd])
-              console.log(res)
               resolve(res)
             } else {
               res = {
