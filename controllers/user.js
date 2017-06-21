@@ -1,9 +1,8 @@
 const crypto = require('crypto')
-// const jwt = require('koa-jwt')
-
 const util = require('../util/util')
 const loadModel = require('../db')
 const userModel = loadModel('user')
+
 // 加密密码
 var getHashPwd = (password) => {
   return crypto.createHash('md5').update(password).digest('hex')
@@ -14,6 +13,7 @@ var createToken = (salt) => {
   let secret = 'micro-club'
   return 'micro.' + crypto.createHmac('sha256', secret).update(salt).digest('hex')
 }
+
 // 检查密码
 var checkPassword = (password) => {
   let charOrNumber = /[A-z]*[a-zA-Z][0-9][A-z0-9]*/.test(password)
@@ -46,7 +46,6 @@ var checkNickname = (nickname) => {
         nickname: nickname
       }
     }).then(res => {
-      console.log(res)
       if (res) {
         resolve('该昵称已被注册')
       } else {
@@ -74,7 +73,6 @@ var checkPhoneNumber = (number) => {
         phoneNumber: number
       }
     }).then(res => {
-      console.log(res)
       if (res) {
         resolve('该手机号已被注册')
       } else {
@@ -122,7 +120,6 @@ const register = async (ctx, next) => {
   }
 
   try {
-    console.log(data)
     await userModel.create(data)
     ctx.status = 200
     ctx.body = {
@@ -141,20 +138,18 @@ const register = async (ctx, next) => {
 const login = async (ctx, next) => {
   let hashPwd = ''
   let oldHashPwd = ''
-  let response = ''
   let thisUser
   const { username, password } = ctx.request.body
   // 获取加密后登录密码
   hashPwd = getHashPwd(password)
-
   // 判断是手机号登录还是昵称登录
-  if (/^\d{11}$/.test(username)) {  // 如果匹配说明手机号登录
+  if (/^\d{11}$/.test(username)) { // 如果匹配说明手机号登录
     thisUser = await userModel.findOne({
       where: {
         phoneNumber: username
       }
     })
-  } else {  // 否则是昵称登录
+  } else { // 否则是昵称登录
     thisUser = await userModel.findOne({
       where: {
         nickname: username
@@ -162,6 +157,7 @@ const login = async (ctx, next) => {
     })
   }
   if (!thisUser) {
+    ctx.status = 400
     ctx.body = {
       code: 400,
       msg: '用户不存在'
@@ -173,7 +169,7 @@ const login = async (ctx, next) => {
     if (oldHashPwd === hashPwd) { // 判断密码是否正确
       let salt = thisUser.nickname + Date.now() + Math.random()
       let token = createToken(String(salt))
-      response = {
+      ctx.body = {
         code: 0,
         msg: '登录成功',
         data: {
@@ -183,13 +179,14 @@ const login = async (ctx, next) => {
         }
       }
     } else {
-      response = {
+      ctx.status = 400
+      ctx.body = {
         code: 400,
         msg: '账号或密码错误'
       }
     }
   }
-  ctx.body = response
+  ctx.body = {}
 }
 
 module.exports = {
