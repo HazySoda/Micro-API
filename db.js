@@ -2,6 +2,7 @@ const fs = require('fs')
 const path = require('path')
 const Sequelize = require('sequelize')
 const mysqlConf = require('./conf/mysql').pengfei
+// const mysqlConf = require('./conf/mysql').xinpeng
 
 var db = new Sequelize(mysqlConf.dbname, mysqlConf.username, mysqlConf.password, {
   host: mysqlConf.host,
@@ -10,7 +11,7 @@ var db = new Sequelize(mysqlConf.dbname, mysqlConf.username, mysqlConf.password,
     timestamps: false
   },
   logging: function (str) {
-    fs.appendFile('./logs/dblog/db.log', str + '\n')
+    fs.appendFile('./logs/dblog/db.log', str + '\n', () => {})
   },
   dialect: 'mysql'
 })

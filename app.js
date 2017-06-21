@@ -21,7 +21,7 @@ app.use(json())
 app.use(require('koa-static')(path.resolve(__dirname, '/public')))
 
 // 添加accessToken 登录注册除外 7天过期
-app.use(jwt({ secret: 'micro-club', exp: 7 * 24 * 60 * 60 }).unless({ path: [/^\/member/] }))
+app.use(jwt({ secret: 'micro-club', exp: 7 * 24 * 60 * 60 }).unless({ path: [/^\/user/] }))
 
 app.use(async (ctx, next) => {
   const start = new Date()

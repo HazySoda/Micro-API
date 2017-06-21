@@ -1,4 +1,3 @@
-
 // mysql 连接配置
 module.exports = {
   pengfei: {

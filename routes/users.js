@@ -1,7 +1,7 @@
 const router = require('koa-router')()
 const userController = require('../controllers/user')
 
-router.prefix('/member')
+router.prefix('/user')
 
 router.post('/register', userController.register)
 
