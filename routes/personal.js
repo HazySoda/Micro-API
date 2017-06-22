@@ -5,6 +5,4 @@ router.prefix('/personal')
 
 router.get('/', personalController.all)
 
-// router.post('/login', userController.login)
-
 module.exports = router

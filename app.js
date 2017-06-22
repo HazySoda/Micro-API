@@ -1,43 +1,37 @@
-const path = require('path')
 const Koa = require('koa')
 const app = new Koa()
 const json = require('koa-json')
 const onError = require('koa-onerror')
 const bodyparser = require('koa-bodyparser')
 const jwt = require('jsonwebtoken')
-const logUtil = require('./util/log_util')
+const logUtil = require('./util/log')
 const users = require('./routes/users')
 const personal = require('./routes/personal')
 const secret = require('./conf/authScrect').secret
 
-// error handler
+// 错误处理
 onError(app)
 
-// middlewares
 app.use(bodyparser({
   enableTypes: ['json', 'form', 'text']
 }))
 
 app.use(json())
 
-app.use(require('koa-static')(path.resolve(__dirname, '/public')))
-
-// 添加token验证中间件
+// Token验证中间件
 app.use(async (ctx, next) => {
-  // 对personal相关路由进行token验证
-  if (ctx.path.startsWith('/personal')) {
+  // 除用户模块，全站验证Token
+  if (!ctx.path.startsWith('/user')) {
     const token = ctx.query.token || ctx.request.body.token
     try {
       let decode = jwt.verify(token, secret)
-      ctx.state = decode
+      ctx.state.user = decode
     } catch (e) {
-      console.log(e)
-      ctx.status = 500
+      ctx.status = 401
       ctx.body = {
-        code: 500,
-        msg: '账户已过期~'
+        code: 401,
+        msg: 'Token过期，请重新登录'
       }
-      ctx.res.end()
     }
   }
   await next()
