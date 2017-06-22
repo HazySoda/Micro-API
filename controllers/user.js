@@ -11,8 +11,8 @@ var getHashPwd = (password) => {
 }
 
 // 生成accessToken
-var createToken = (payground) => {
-  return jwt.sign(payground, secret, {expiresIn: '1h'})
+var createToken = (payload) => {
+  return jwt.sign(payload, secret, {expiresIn: '1h'})
 }
 
 // 检查密码
@@ -168,12 +168,11 @@ const login = async (ctx, next) => {
   oldHashPwd = thisUser.hashpwd
   if (oldHashPwd) { // 如果为true，说明用户存在
     if (oldHashPwd === hashPwd) { // 判断密码是否正确
-      let payground = {
+      let payload = {
         nickname: thisUser.nickname,
-        phoneNumber: thisUser.phoneNumber,
-        regDate: thisUser.regDate
+        phoneNumber: thisUser.phoneNumber
       }
-      let token = createToken(payground)
+      let token = createToken(payload)
       ctx.body = {
         code: 0,
         msg: '登录成功',

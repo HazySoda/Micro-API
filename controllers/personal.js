@@ -1,5 +1,7 @@
 const all = async (ctx, next) => {
-  ctx.body = ctx.state
+  if (ctx.state.user) {
+    ctx.body = ctx.state
+  }
 }
 
 module.exports = {
