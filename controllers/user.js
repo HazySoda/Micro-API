@@ -179,7 +179,6 @@ const login = async (ctx, next) => {
         data: {
           nickname: thisUser.nickname,
           phoneNumber: thisUser.phoneNumber,
-          regDate: thisUser.regDate,
           accessToken: token
         }
       }
