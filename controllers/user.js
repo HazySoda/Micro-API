@@ -1,7 +1,9 @@
 const crypto = require('crypto')
+const jwt = require('jsonwebtoken')
 const util = require('../util/util')
 const loadModel = require('../db')
 const userModel = loadModel('user')
+const secret = require('../conf/authScrect').secret
 
 // 加密密码
 var getHashPwd = (password) => {
@@ -9,9 +11,8 @@ var getHashPwd = (password) => {
 }
 
 // 生成accessToken
-var createToken = (salt) => {
-  let secret = 'micro-club'
-  return 'micro.' + crypto.createHmac('sha256', secret).update(salt).digest('hex')
+var createToken = (payground) => {
+  return jwt.sign(payground, secret, {expiresIn: '1h'})
 }
 
 // 检查密码
@@ -167,14 +168,19 @@ const login = async (ctx, next) => {
   oldHashPwd = thisUser.hashpwd
   if (oldHashPwd) { // 如果为true，说明用户存在
     if (oldHashPwd === hashPwd) { // 判断密码是否正确
-      let salt = thisUser.nickname + Date.now() + Math.random()
-      let token = createToken(String(salt))
+      let payground = {
+        nickname: thisUser.nickname,
+        phoneNumber: thisUser.phoneNumber,
+        regDate: thisUser.regDate
+      }
+      let token = createToken(payground)
       ctx.body = {
         code: 0,
         msg: '登录成功',
         data: {
           nickname: thisUser.nickname,
           phoneNumber: thisUser.phoneNumber,
+          regDate: thisUser.regDate,
           accessToken: token
         }
       }
@@ -186,7 +192,6 @@ const login = async (ctx, next) => {
       }
     }
   }
-  ctx.body = {}
 }
 
 module.exports = {
