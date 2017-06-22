@@ -1,10 +1,8 @@
-\# Micro-API文档
-
-
+# Micro-API文档
 
 ## 用户
 
-#### 注册
+### 注册
 
 - URL： /user/register
 - 请求方式： POST
@@ -28,7 +26,7 @@
  ```
 
 
-#### 登录
+### 登录
 
 - URL： /user/login
 
@@ -56,4 +54,4 @@
     }
   }
   ```
-
+  
