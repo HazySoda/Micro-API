@@ -27,14 +27,17 @@
   - 请求方式： POST
   - 请求参数：
   
+  
     |名称 | 类型	| 必填 | 备注 |
     | ------- | ------- | ------- | ------- | 
-    |username  | string        | Y  | 手机号／昵称   |
-    | password           | string  | Y  | 密码       |
+    |username  | string | Y  | 手机号／昵称  |
+    | password | string | Y  | 密码         |
     
+   
+   
    - 返回结果示例
     
-    ` 
+    ``` 
         {
             "code": 0,
             "msg": "登录成功",
@@ -45,4 +48,4 @@
               "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuaWNrbmFtZSI6Im5laWxsaW4iLCJwaG9uZU51bWJlciI6IjE0MTQxMjQ1NDU1IiwicmVnRGF0ZSI6IjIwMTctMDYtMjIgMjE6NTY6NTkiLCJpYXQiOjE0OTgxNDI2NjYsImV4cCI6MTQ5ODE0NjI2Nn0.54SNXB7IVU_pMPdmL44CB8ChLC7WjiycSy16klA5hHg"
             }
         }
-    `
+    ```
