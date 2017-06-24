@@ -1,3 +1,4 @@
+//  用户表
 module.exports = function (sequelize, DataTypes) {
   return sequelize.define('user', {
     uid: {
@@ -18,6 +19,29 @@ module.exports = function (sequelize, DataTypes) {
       type: DataTypes.STRING,
       allowNull: false,
       unique: true
+    },
+    avatar: {
+      type: DataTypes.STRING,
+      allowNull: true
+    },
+    level: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 1
+    },
+    exp: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 0
+    },
+    intro: {
+      type: DataTypes.TEXT,
+      allowNull: false,
+      defaultValue: ''
+    },
+    fields: {
+      type: DataTypes.STRING,
+      allowNull: true
     },
     regDate: {
       type: DataTypes.STRING,
