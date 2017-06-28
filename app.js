@@ -1,12 +1,14 @@
 const Koa = require('koa')
 const app = new Koa()
 const json = require('koa-json')
+const multy = require('multy')
+const serve = require('koa-static')
+const mount = require('koa-mount')
 const onError = require('koa-onerror')
 const bodyparser = require('koa-bodyparser')
 const jwt = require('jsonwebtoken')
 const logUtil = require('./util/log')
-const users = require('./routes/users')
-const personal = require('./routes/personal')
+const route = require('./routes')
 const secret = require('./conf/authScrect').secret
 
 // 错误处理
@@ -16,18 +18,23 @@ app.use(bodyparser({
   enableTypes: ['json', 'form', 'text']
 }))
 
+// 添加解析form-data中间件
+app.use(multy())
+
 app.use(json())
+
+// 访问静态资源
+app.use(mount('/public', serve('public/')))
 
 // Token验证中间件
 app.use(async (ctx, next) => {
-  // 除用户模块，全站验证Token
-  if (!ctx.path.startsWith('/user')) {
+  // 除用户模块和访问静态资源，全站验证Token
+  if (!ctx.path.startsWith('/user') || ctx.path.startsWith('/public')) {
     const token = ctx.query.token || ctx.request.body.token
     try {
       let decode = jwt.verify(token, secret)
       ctx.state.user = decode
     } catch (e) {
-      ctx.status = 401
       ctx.body = {
         code: 401,
         msg: 'Token过期，请重新登录'
@@ -60,7 +67,6 @@ app.use(async (ctx, next) => {
 })
 
 // routes
-app.use(users.routes(), users.allowedMethods())
-app.use(personal.routes(), personal.allowedMethods())
+route(app)
 
 module.exports = app
