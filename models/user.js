@@ -36,8 +36,7 @@ module.exports = function (sequelize, DataTypes) {
     },
     intro: {
       type: DataTypes.TEXT,
-      allowNull: false,
-      defaultValue: ''
+      allowNull: true
     },
     fields: {
       type: DataTypes.STRING,
