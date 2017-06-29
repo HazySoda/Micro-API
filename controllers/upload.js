@@ -6,10 +6,9 @@ var saveImg = (ctx) => {
     let file = ctx.request.body.file
     let { name, mimetype } = ctx.request.body.file
     if (mimetype.indexOf('image') === -1) {
-      console.log(1)
       resolve({
         code: 400,
-        msg: '参数格式错误'
+        msg: '文件格式错误'
       })
     }
     let savePath = path.resolve('public/img', name)
@@ -32,7 +31,7 @@ var loadImg = async (ctx, next) => {
   if (!ctx.request.body.file) {
     ctx.body = {
       code: 400,
-      msg: '文件不能为空'
+      msg: '文件不可为空'
     }
   }
   let result = await saveImg(ctx)
@@ -43,7 +42,6 @@ var loadImg = async (ctx, next) => {
       msg: '上传成功'
     }
   } else {
-    console.log(result)
     ctx.body = result
   }
 }
