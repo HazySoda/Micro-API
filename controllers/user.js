@@ -32,7 +32,7 @@ var checkPassword = (password) => {
 
 // 检查昵称
 var checkNickname = (nickname) => {
-  return new Promise((resolve, reject) => {
+  return new Promise(async (resolve, reject) => {
     if (!nickname) {
       resolve('昵称不可为空')
     }
@@ -42,23 +42,26 @@ var checkNickname = (nickname) => {
     if (/^[0-9]*$/.test(nickname)) {
       resolve('昵称不能为纯数字')
     }
-    userModel.findOne({
-      where: {
-        nickname: nickname
-      }
-    }).then(res => {
+    try {
+      let res = await userModel.findOne({
+        where: {
+          nickname: nickname
+        }
+      })
       if (res) {
         resolve('该昵称已被注册')
       } else {
         resolve(false)
       }
-    })
+    } catch (e) {
+      resolve('数据库查询失败')
+    }
   })
 }
 
 // 检查手机号码
 var checkPhoneNumber = (number) => {
-  return new Promise((resolve, reject) => {
+  return new Promise(async (resolve, reject) => {
     let isNumber = /^\d{11}$/.test(number)
     if (!number) {
       resolve('手机号码不可为空')
@@ -69,17 +72,20 @@ var checkPhoneNumber = (number) => {
     if (!isNumber) {
       resolve('无效的手机号码')
     }
-    userModel.findOne({
-      where: {
-        phoneNumber: number
-      }
-    }).then(res => {
+    try {
+      let res = userModel.findOne({
+        where: {
+          phoneNumber: number
+        }
+      })
       if (res) {
         resolve('该手机号已被注册')
       } else {
         resolve(false)
       }
-    })
+    } catch (e) {
+      resolve('数据库查询失败')
+    }
   })
 }
 

@@ -1,10 +1,10 @@
 const fs = require('fs')
 const path = require('path')
 
-var saveImg = (ctx) => {
+const saveImg = (ctx) => {
   return new Promise((resolve, reject) => {
-    let file = ctx.request.body.file
-    let { name, mimetype } = ctx.request.body.file
+    let { file, type } = ctx.request.body
+    let { name, mimetype } = file
     if (mimetype.indexOf('image') === -1) {
       console.log(1)
       resolve({
@@ -12,8 +12,13 @@ var saveImg = (ctx) => {
         msg: '参数格式错误'
       })
     }
-    let savePath = path.resolve('public/img', name)
-    let serverPath = path.join(ctx.host, '/public/img', name)
+    let publicPath = `public/img/${type}`
+    let savePath = path.resolve(publicPath, name)
+    let serverPath = path.join(ctx.host, publicPath, name)
+    // 如果没有该文件夹，就创建一个
+    if (!fs.existsSync(path.resolve(publicPath))) {
+      fs.mkdirSync(path.resolve(publicPath))
+    }
     file.pipe(fs.createWriteStream(savePath))
     file.on('end', () => {
       resolve(serverPath)
@@ -28,7 +33,7 @@ var saveImg = (ctx) => {
   })
 }
 
-var loadImg = async (ctx, next) => {
+const loadImg = async (ctx, next) => {
   if (!ctx.request.body.file) {
     ctx.body = {
       code: 400,
