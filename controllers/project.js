@@ -14,7 +14,7 @@ const queryProjectList = async (ctx, next) => {
       code: 400,
       msg: '参数错误，请重试！'
     }
-    ctx.req.end()
+    return
   }
   // 获取该用户参与的项目
   let projects
@@ -60,6 +60,58 @@ const queryProjectList = async (ctx, next) => {
   ctx.body = res
 }
 
+const createMultiProject = async (ctx, next) => {
+  let res
+  const { uid, name, avatar, nickname, type, rank } = ctx.request.body
+  if (!uid || !name || !avatar || !nickname || !type || !rank) {
+    ctx.status = 400
+    ctx.body = {
+      code: 400,
+      msg: '参数错误，请重试！'
+    }
+    return
+  }
+  try {
+    const isNameDuplicated = await multiModel.findOne({
+      where: {
+        name
+      }
+    })
+    if (isNameDuplicated) {
+      ctx.status = 400
+      ctx.body = {
+        code: 400,
+        msg: '项目名称重复！'
+      }
+      return
+    } else {
+      await multiModel.create({
+        uid,
+        name,
+        avatar,
+        nickname,
+        type,
+        rank
+      })
+      ctx.status = 200
+      res = {
+        code: 0,
+        msg: '创建成功！'
+      }
+    }
+  } catch (e) {
+    console.log(e)
+    ctx.status = 500
+    res = {
+      code: 500,
+      msg: '创建失败！',
+      err: e.message
+    }
+  }
+  ctx.body = res
+}
+
 module.exports = {
-  queryProjectList
+  queryProjectList,
+  createMultiProject
 }
