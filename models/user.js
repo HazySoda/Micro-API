@@ -42,6 +42,10 @@ module.exports = function (sequelize, DataTypes) {
       type: DataTypes.STRING,
       allowNull: true
     },
+    location: {
+      type: DataTypes.STRING,
+      allowNull: true
+    },
     regDate: {
       type: DataTypes.STRING,
       allowNull: false

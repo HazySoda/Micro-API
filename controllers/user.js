@@ -73,11 +73,12 @@ var checkPhoneNumber = (number) => {
       resolve('无效的手机号码')
     }
     try {
-      let res = userModel.findOne({
+      let res = await userModel.findOne({
         where: {
           phoneNumber: number
         }
       })
+      console.log(res)
       if (res) {
         resolve('该手机号已被注册')
       } else {
@@ -185,6 +186,7 @@ const login = async (ctx, next) => {
         data: {
           nickname: thisUser.nickname,
           phoneNumber: thisUser.phoneNumber,
+          uid: thisUser.uid,
           accessToken: token
         }
       }
