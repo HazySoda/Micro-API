@@ -4,7 +4,7 @@ module.exports = function (sequelize, DataTypes) {
     pid: {
       type: DataTypes.INTEGER,
       primaryKey: true,
-      unique: true
+      autoIncrement: true
     },
     name: {
       type: DataTypes.STRING,

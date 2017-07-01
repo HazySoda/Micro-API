@@ -5,4 +5,6 @@ router.prefix('/project')
 
 router.get('/query', projectController.queryProjectList)
 
+router.post('/create', projectController.createMultiProject)
+
 module.exports = router
