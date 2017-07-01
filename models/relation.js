@@ -8,6 +8,10 @@ module.exports = function (sequelize, DataTypes) {
     to: {
       type: DataTypes.INTEGER,
       allowNull: false
+    },
+    type: {
+      type: DataTypes.INTEGER,
+      allowNull: false
     }
   }, {tableName: 'relation'})
 }
