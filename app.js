@@ -27,22 +27,24 @@ app.use(json())
 app.use(mount('/public', serve('public/')))
 
 // Token验证中间件
-app.use(async (ctx, next) => {
-  // 除用户模块和访问静态资源，全站验证Token
-  if (!ctx.path.startsWith('/user') || ctx.path.startsWith('/public')) {
-    const token = ctx.query.token || ctx.request.body.token
-    try {
-      let decode = jwt.verify(token, secret)
-      ctx.state.user = decode
-    } catch (e) {
-      ctx.body = {
-        code: 401,
-        msg: 'Token过期，请重新登录'
+if (process.env.NODE_ENV === 'prod') {
+  app.use(async (ctx, next) => {
+    // 除用户模块和访问静态资源，全站验证Token
+    if (!ctx.path.startsWith('/user')) {
+      const token = ctx.query.token || ctx.request.body.token
+      try {
+        let decode = jwt.verify(token, secret)
+        ctx.state.user = decode
+      } catch (e) {
+        ctx.status = 401
+        ctx.body = {
+          code: 401,
+          msg: 'Token过期，请重新登录'
+        }
       }
     }
-  }
-  await next()
-})
+  })
+}
 
 app.use(async (ctx, next) => {
   const start = new Date()
