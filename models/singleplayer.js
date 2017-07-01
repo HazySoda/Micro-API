@@ -1,9 +1,13 @@
 // 单人挑战表
 module.exports = function (sequelize, DataTypes) {
   return sequelize.define('singleplayer', {
+    pid: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      unique: true
+    },
     name: {
       type: DataTypes.STRING,
-      primaryKey: true,
       unique: true
     },
     count: {
