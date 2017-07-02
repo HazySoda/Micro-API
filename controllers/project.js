@@ -3,11 +3,11 @@ const playerModel = loadModel('player')
 const singleModel = loadModel('singleplayer')
 const multiModel = loadModel('multiplayer')
 
-// 建立singleplayer、multiplayer河player表的关联
-playerModel.hasMany(singleModel, {foreignKey: 'pid'})
-playerModel.hasMany(multiModel, {foreignKey: 'pid'})
-singleModel.belongsTo(playerModel, {foreignKey: 'pid'})
-multiModel.belongsTo(playerModel, {foreignKey: 'pid'})
+// 建立singleplayer、multiplayer和player表的关联
+// playerModel.hasMany(singleModel, {foreignKey: 'pid', targetKey: 'pid'})
+// playerModel.hasMany(multiModel, {foreignKey: 'pid', targetKey: 'pid'})
+singleModel.belongsTo(playerModel, {foreignKey: 'pid', targetKey: 'pid'})
+multiModel.belongsTo(playerModel, {foreignKey: 'pid', targetKey: 'pid'})
 
 const queryProjectList = async (ctx, next) => {
   let res
@@ -26,23 +26,25 @@ const queryProjectList = async (ctx, next) => {
   let projectData
   try {
     if (~~type === 0) {
-      projectData = await playerModel.findAll({
-        where: {
-          uid,
-          type
-        },
+      projectData = await singleModel.findAll({
         include: [{
-          model: singleModel
+          model: playerModel,
+          attributes: [],
+          where: {
+            uid,
+            type
+          }
         }]
       })
     } else {
-      projectData = await playerModel.findAll({
-        where: {
-          uid,
-          type
-        },
+      projectData = await multiModel.findAll({
         include: [{
-          model: multiModel
+          model: playerModel,
+          attributes: [],
+          where: {
+            uid,
+            type
+          }
         }]
       })
     }
