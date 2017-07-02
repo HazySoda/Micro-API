@@ -1,6 +1,6 @@
 # Micro-API
 
-> Micro API based on Node.js & Koa2
+> Micro API based on Node.js & Koa2 & Mysql
 
 ## Document
 
