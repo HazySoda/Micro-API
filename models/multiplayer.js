@@ -1,9 +1,13 @@
 // 多人挑战表
 module.exports = function (sequelize, DataTypes) {
   return sequelize.define('multiplayer', {
+    pid: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true
+    },
     name: {
       type: DataTypes.STRING,
-      primaryKey: true,
       unique: true
     },
     uid: {

@@ -5,20 +5,12 @@ module.exports = function (sequelize, Datatypes) {
       type: Datatypes.INTEGER,
       allowNull: false
     },
-    record: {
+    pid: {
       type: Datatypes.INTEGER,
-      allowNull: false
-    },
-    cal: {
-      type: Datatypes.INTEGER,
-      allowNull: false
-    },
-    name: {
-      type: Datatypes.STRING,
-      allowNull: false
+      allowNull: true
     },
     type: {
-      type: Datatypes.BOOLEAN,
+      type: Datatypes.INTEGER,
       allowNull: false
     }
   }, {tableName: 'player'})
