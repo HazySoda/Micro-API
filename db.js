@@ -1,8 +1,8 @@
 const fs = require('fs')
 const path = require('path')
 const Sequelize = require('sequelize')
-// const mysqlConf = require('./conf/mysql').pengfei
-const mysqlConf = require('./conf/mysql').xinpeng
+const mysqlConf = require('./conf/mysql').pengfei
+// const mysqlConf = require('./conf/mysql').xinpeng
 
 var db = new Sequelize(mysqlConf.dbname, mysqlConf.username, mysqlConf.password, {
   host: mysqlConf.host,

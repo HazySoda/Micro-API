@@ -3,6 +3,12 @@ const playerModel = loadModel('player')
 const singleModel = loadModel('singleplayer')
 const multiModel = loadModel('multiplayer')
 
+// 建立singleplayer、multiplayer河player表的关联
+playerModel.hasMany(singleModel, {foreignKey: 'pid'})
+playerModel.hasMany(multiModel, {foreignKey: 'pid'})
+singleModel.belongsTo(playerModel, {foreignKey: 'pid'})
+multiModel.belongsTo(playerModel, {foreignKey: 'pid'})
+
 const queryProjectList = async (ctx, next) => {
   let res
   // 获取参数
@@ -17,30 +23,27 @@ const queryProjectList = async (ctx, next) => {
     return
   }
   // 获取该用户参与的项目
-  let projects
   let projectData
   try {
-    projects = await playerModel.findAll({
-      attributes: ['pid'],
-      where: {
-        uid,
-        type
-      }
-    })
-    projects = projects.map((item) => {
-      return item.pid
-    })
-    if (type === 0) {
-      projectData = await singleModel.findAll({
+    if (~~type === 0) {
+      projectData = await playerModel.findAll({
         where: {
-          pid: projects
-        }
+          uid,
+          type
+        },
+        include: [{
+          model: singleModel
+        }]
       })
     } else {
-      projectData = await multiModel.findAll({
+      projectData = await playerModel.findAll({
         where: {
-          pid: projects
-        }
+          uid,
+          type
+        },
+        include: [{
+          model: multiModel
+        }]
       })
     }
     ctx.status = 200
