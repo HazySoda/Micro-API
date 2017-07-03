@@ -4,9 +4,7 @@ module.exports = function (sequelize, DataTypes) {
     mid: {
       type: DataTypes.INTEGER,
       autoIncrement: true,
-      primaryKey: true,
-      unique: true,
-      defaultValue: 0
+      primaryKey: true
     },
     uid: {
       type: DataTypes.INTEGER,
@@ -28,7 +26,7 @@ module.exports = function (sequelize, DataTypes) {
       type: DataTypes.STRING,
       allowNull: false
     },
-    img: {
+    image: {
       type: DataTypes.STRING,
       allowNull: true
     },

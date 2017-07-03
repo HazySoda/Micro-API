@@ -1,6 +1,11 @@
 // 评论表
 module.exports = function (sequelize, DataTypes) {
   return sequelize.define('comments', {
+    cid: {
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
+      primaryKey: true
+    },
     uid: {
       type: DataTypes.INTEGER,
       allowNull: false
