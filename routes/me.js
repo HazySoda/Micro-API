@@ -1,7 +1,7 @@
 const router = require('koa-router')()
 const meController = require('../controllers/me')
 
-router.prefix('/me')
+router.prefix('/v1/me')
 
 // 查询用户信息
 router.get('/query', meController.query)
