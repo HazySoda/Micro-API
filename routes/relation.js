@@ -1,7 +1,7 @@
 const router = require('koa-router')()
 const relationController = require('../controllers/relation')
 
-router.prefix('/relation')
+router.prefix('/v1/relation')
 
 router.post('/', relationController.changeUserRelation)
 

@@ -30,7 +30,7 @@ app.use(mount('/public', serve('public/')))
 if (process.env.NODE_ENV === 'prod') {
   app.use(async (ctx, next) => {
     // 除用户模块和访问静态资源，全站验证Token
-    if (!ctx.path.startsWith('/user')) {
+    if (!ctx.path.startsWith('/v1/user')) {
       const token = ctx.query.token || ctx.request.body.token
       try {
         let decode = jwt.verify(token, secret)

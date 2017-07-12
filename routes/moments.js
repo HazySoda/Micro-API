@@ -1,7 +1,7 @@
 const router = require('koa-router')()
 const momentsController = require('../controllers/moments')
 
-router.prefix('/moments')
+router.prefix('/v1/moments')
 
 // 创建动态
 router.post('/create', momentsController.createMoments)
